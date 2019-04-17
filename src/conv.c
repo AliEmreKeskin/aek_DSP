@@ -1,5 +1,6 @@
 #include "conv.h"
 
+//stream
 int conv(double s[],int s_size, double h[], int h_size, double y[]){
     memset(y,0,(s_size+h_size-1)*sizeof(double));
     int i,j;
@@ -11,6 +12,7 @@ int conv(double s[],int s_size, double h[], int h_size, double y[]){
     return 1;
 }
 
+//oldschool
 int conv2(double s[],int s_size, double h[], int h_size, double y[]){
     memset(y,0,(s_size+h_size-1)*sizeof(double));
     int i,j;
