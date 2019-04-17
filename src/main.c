@@ -3,8 +3,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "conv.h"
+#include "FIR_filter.h"
 
 int main() {
+    //image operations
     aek_image img=aek_imread("data/elma.jpg");
     img=aek_RGB_to_Gray(img);
     aek_setpixel3b(img,10,10,0,0,0);
@@ -64,6 +66,12 @@ int main() {
         VarianceStream(stat_ptr,i);
         printf("%d\t%f\t%f\n", stat_ptr->length, stat_ptr->mean, stat_ptr->variance);
     }
+
+    /*****************/
+    /*  Convolution  */
+    /*****************/
+    printf("*********************\n");
+    printf("Convolution Demo\n");
     int s_size=9;
     int h_size=4;
     double s[]={0,-1,-1.2,2,1.2,1.2,0.7,0,-0.7};
@@ -75,68 +83,20 @@ int main() {
         printf(" %.2f \n",y[i]);
     }
 
+    /**************/
+    /* FIR Filter */
+    /**************/
+    int signal_size = 6;
+    int signal[]={1,2,3,4,5,6};
+    int coefficients_size=5;
+    int coefficients[]={-2,0,1,2,3};
+    int output_y[signal_size];
+    FIR_filter(signal,signal_size,coefficients,coefficients_size,output_y);
+    printf("*********************\n");
+    printf("FIR Filter Demo\n");
+    for(int i=0;i<signal_size;i++){
+        printf("%d\n",output_y[i]);
+    }
+
     return 0;
 }
-
-
-//#define CHANNEL_NUM 3
-
-// int main() {
-
-//     //read from file
-//     int width, height, bpp;
-//     uint8_t* rgb_image = stbi_load("data/elma.jpg", &width, &height, &bpp, 3);
-
-//     //convert to grayscale
-//     uint8_t* gray=RGB_to_Gray(rgb_image,width,height);
-
-//     //resize
-//     int small_width=100;
-//     int small_height=50;
-//     uint8_t* small_image=malloc(small_width*small_height*CHANNEL_NUM);
-//     stbir_resize_uint8(rgb_image,width,height,0,small_image,small_width,small_height,0,CHANNEL_NUM);
-
-//     //pixel manipulation
-//     Set_Pixel_RGB(small_image,small_width,small_height,10,10,0,0,0);
-//     Set_Pixel_Gray(gray,width,height,10,10,0);    
-
-//     //write to file
-//     uint8_t* gray_rgb=Gray_to_RGB(gray,width,height);
-//     stbi_write_png("gray.png", width, height, CHANNEL_NUM, gray_rgb, width*CHANNEL_NUM);
-//     stbi_write_png("small.png",small_width,small_height,CHANNEL_NUM,small_image,small_width*CHANNEL_NUM);
-
-//     //free up memory
-//     stbi_image_free(rgb_image);
-//     stbi_image_free(gray);
-//     stbi_image_free(gray_rgb);
-//     stbi_image_free(small_image);
-
-//     // //histogram
-//     // int* histogram_gray=Get_Histogram_Gray(gray,width,height);
-//     // for(int i=0;i<256;i++){
-//     //     printf("%d:\t%d\n",i,histogram_gray[i]);
-//     // }
-
-//     // //mean from histogram
-//     // printf("******************\n");
-//     // printf("normal sum:\t%f\n",     Sum_uint8(gray,width*height));
-//     // printf("normal mean:\t%f\n",    Mean_uint8(gray,width*height));
-//     // printf("normal variance:\t%f\n",Variance_uint8(gray,width*height));
-//     // printf("******************\n");
-//     // printf("histogram sum:\t%f\n",  Sum_histogram(histogram_gray,256));
-//     // printf("histogram mean:\t%f\n",  Mean_histogram(histogram_gray,256));
-//     // printf("histogram variance:\t%f\n",  Variance_histogram(histogram_gray,256));
-
-//     // // //not working
-//     // // int histogram_width,histogram_height;
-//     // // uint8_t* histogram_gray_image=Get_Histogram_Image_Gray(histogram_gray,width,height,&histogram_width,&histogram_height);
-//     // // stbi_write_png("histogram.png",256,histogram_height,CHANNEL_NUM,histogram_gray_image,256*CHANNEL_NUM);
-//     // // uint8_t* small_histogram_gray_image;
-//     // // stbir_resize_uint8(histogram_gray_image,histogram_width,histogram_height,0,small_histogram_gray_image,256,256,0,CHANNEL_NUM);
-//     // // stbi_write_png("small_histogram.png",256,256,CHANNEL_NUM,small_histogram_gray_image,256*CHANNEL_NUM);
-
-    
-
-
-//     return 0;
-// }
