@@ -2,6 +2,7 @@
 #include "image.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include "conv.h"
 
 int main() {
     aek_image img=aek_imread("data/elma.jpg");
@@ -63,6 +64,17 @@ int main() {
         VarianceStream(stat_ptr,i);
         printf("%d\t%f\t%f\n", stat_ptr->length, stat_ptr->mean, stat_ptr->variance);
     }
+    int s_size=9;
+    int h_size=4;
+    double s[]={0,-1,-1.2,2,1.2,1.2,0.7,0,-0.7};
+    double h[]={1,-0.5,-0.2,-0.1};
+    double y[s_size+h_size-1];
+
+    int temp=conv2(s,s_size,h,h_size,y);
+    for(int i=0;i<s_size+h_size-1;i++){
+        printf(" %.2f \n",y[i]);
+    }
+
     return 0;
 }
 
