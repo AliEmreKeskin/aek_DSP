@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include "conv.h"
 #include "FIR_filter.h"
+#define PI 3.14
 
 int main() {
     //image operations
@@ -19,6 +20,8 @@ int main() {
 
     //histogram
     int* histogram_gray=aek_histogram(img);
+    printf("***************\n");
+    printf("Histogram of image:\n");
     for(int i=0;i<256;i++){
         printf("%d:\t%d\n",i,histogram_gray[i]);
     }
@@ -62,6 +65,7 @@ int main() {
     struct stat* stat_ptr;
     stat_ptr=&stat0;
 
+    printf("val\tmean\t\tvariance\n");
     for(int i=0;i<count;i++){
         VarianceStream(stat_ptr,i);
         printf("%d\t%f\t%f\n", stat_ptr->length, stat_ptr->mean, stat_ptr->variance);
@@ -93,9 +97,45 @@ int main() {
     int output_y[signal_size];
     FIR_filter(signal,signal_size,coefficients,coefficients_size,output_y);
     printf("*********************\n");
-    printf("FIR Filter Demo\n");
+    printf("FIR Filter Test\n");
     for(int i=0;i<signal_size;i++){
         printf("%d\n",output_y[i]);
+    }
+
+    printf("**************\n");
+    printf("Sine wave test \nSampling Rate: 20KHz\nNumber of samples: 200\n");
+    int numberOfSamples=200;
+    int samplingRate=20000;
+
+    int freq3K=3000;
+    double sineWave3K[numberOfSamples];
+    for(int i=0;i<numberOfSamples;i++){
+        sineWave3K[i]=sin(2*PI*freq3K*(double)i/samplingRate);
+    }
+
+    int freq5K=5000;
+    double sineWave5K[numberOfSamples];
+    for(int i=0;i<numberOfSamples;i++){
+        sineWave5K[i]=sin(2*PI*freq5K*(double)i/samplingRate);
+    }
+
+    printf("Fifth grade 4KHz low pass\n");
+    double lowPass4KHz5G[5];
+    lowPass4KHz5G[0]=0.075037080444813233914835848281654762104;
+    lowPass4KHz5G[1]=0.284218843522212105678903526495560072362;
+    lowPass4KHz5G[2]=0.381488152065949326363636373571353033185;
+    lowPass4KHz5G[3]=0.284218843522212105678903526495560072362;
+    lowPass4KHz5G[4]=0.075037080444813233914835848281654762104;
+    
+    double out1[numberOfSamples];
+    FIR_filterd(sineWave3K,numberOfSamples,lowPass4KHz5G,5,out1);
+
+    double out2[numberOfSamples];
+    FIR_filterd(sineWave5K,numberOfSamples,lowPass4KHz5G,5,out2);
+
+    printf("3K\t\toutput\t\t5K\t\toutput\n");
+    for(int i=0;i<numberOfSamples;i++){
+        printf("%f\t%f\t%f\t%f\n",sineWave3K[i],out1[i],sineWave5K[i],out2[i]);
     }
 
     return 0;
