@@ -4,7 +4,9 @@
 #include <stdlib.h>
 #include "conv.h"
 #include "FIR_filter.h"
-#define PI 3.14
+#include "DFT.h"
+
+#define PI 3.14159265358979323846
 
 int main() {
     //image operations
@@ -137,6 +139,40 @@ int main() {
     for(int i=0;i<numberOfSamples;i++){
         printf("%f\t%f\t%f\t%f\n",sineWave3K[i],out1[i],sineWave5K[i],out2[i]);
     }
+
+    /**************/
+    /*    DFT     */
+    /**************/
+    printf("*********************\n");
+    printf("DFT demo\n");
+    int x_size=10;
+    double x[]={1,2,3,5,9,16,15,14,13,12};
+    printf("x: ");
+    for(int i=0;i<x_size;i++){
+        printf("%f, ",x[i]);
+    }
+    printf("\n");
+
+    double ReX[x_size/2+1];
+    double ImX[x_size/2+1];
+    dft(x,x_size,ReX,ImX);
+    printf("ReX: ");
+    for(int i=0;i<x_size/2+1;i++){
+        printf("%f, ",ReX[i]);
+    }
+    printf("\nImX: ");
+    for(int i=0;i<x_size/2+1;i++){
+        printf("%f, ",ImX[i]);
+    }
+    printf("\n");
+
+    double x_new[x_size];
+    dft_inverse(ReX,ImX,x_new,x_size);
+    printf("x_new: ");
+    for(int i=0;i<x_size;i++){
+        printf("%f, ",x_new[i]);
+    }
+    printf("\n");
 
     return 0;
 }
